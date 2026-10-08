@@ -267,14 +267,15 @@ enum ColorPickerTarget: Equatable {
     /// A dialog's own color, such as Export JPEG's background for transparency. The dialog is told as it changes.
     case dialog(title: String)
     var title: String {
+        func localized(_ key: String) -> String { NSLocalizedString(key, comment: "") }
         switch self {
-        case .text: return "Color Picker (Text Color)"
-        case .effect(let kind): return "Color Picker (\(kind.rawValue) Color)"
-        case .palette(let background): return background ? "Color Picker (Background Color)" : "Color Picker (Foreground Color)"
-        case .gradientMap(let highlights): return highlights ? "Color Picker (Gradient Map Highlights)" : "Color Picker (Gradient Map Shadows)"
-        case .vignette: return "Color Picker (Vignette Color)"
-        case .dither(let light): return light ? "Color Picker (Dither Light Color)" : "Color Picker (Dither Dark Color)"
-        case .dialog(let title): return "Color Picker (\(title))"
+        case .text: return localized("Color Picker (Text Color)")
+        case .effect(let kind): return String(format: localized("Color Picker (%@ Color)"), localized(kind.rawValue))
+        case .palette(let background): return localized(background ? "Color Picker (Background Color)" : "Color Picker (Foreground Color)")
+        case .gradientMap(let highlights): return localized(highlights ? "Color Picker (Gradient Map Highlights)" : "Color Picker (Gradient Map Shadows)")
+        case .vignette: return localized("Color Picker (Vignette Color)")
+        case .dither(let light): return localized(light ? "Color Picker (Dither Light Color)" : "Color Picker (Dither Dark Color)")
+        case .dialog(let title): return String(format: localized("Color Picker (%@)"), localized(title))
         }
     }
 }

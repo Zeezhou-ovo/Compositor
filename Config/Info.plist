@@ -45,7 +45,10 @@
 	<key>SUPublicEDKey</key>
 	<string>KZvD724t8QpzTR4OGrHrsCWt538TJ/g/qrTZii+o214=</string>
 	<key>SUEnableAutomaticChecks</key>
-	<true/>
+	<false/>
+	<!-- Enable only when this build points to a localized fork's own signed update feed. -->
+	<key>CompositorEnableUpdater</key>
+	<false/>
 	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>

@@ -128,7 +128,8 @@ extension EditorSession {
         }
         guard canEditLayers, document != nil, rect.width >= 1, rect.height >= 1 else { return }
         guard Int(rect.width) * Int(rect.height) <= Self.maxShapePixels else {
-            brushError = "That shape is too large. A shape can cover up to \(DocumentLimits.maxSurfaceMegapixels) megapixels."
+            brushError = CompositorText.format("That shape is too large. A shape can cover up to %lld megapixels.",
+                                               Int64(DocumentLimits.maxSurfaceMegapixels))
             return
         }
         do {
@@ -152,8 +153,9 @@ extension EditorSession {
     func nextShapeName(_ kind: ShapeKind) -> String {
         let names = Set(document?.layers.map(\.name) ?? [])
         var number = 1
-        while names.contains("\(kind.rawValue) \(number)") { number += 1 }
-        return "\(kind.rawValue) \(number)"
+        let localizedKind = CompositorText.string(kind.rawValue)
+        while names.contains("\(localizedKind) \(number)") || names.contains("\(kind.rawValue) \(number)") { number += 1 }
+        return "\(localizedKind) \(number)"
     }
 
     /// A shape layer scaled to a new size draws its shape again at that size, so a rounded corner keeps its radius

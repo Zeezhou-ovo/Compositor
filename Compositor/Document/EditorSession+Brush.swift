@@ -55,7 +55,7 @@ extension EditorSession {
         var sourceOffset: CGSize?
         if tool == .cloneStamp {
             guard let offset = cloneStrokeOffset(at: point) else {
-                brushError = "Option-click where Clone Stamp should copy from first."
+                brushError = CompositorText.string("Option-click where Clone Stamp should copy from first.")
                 return
             }
             sourceOffset = offset

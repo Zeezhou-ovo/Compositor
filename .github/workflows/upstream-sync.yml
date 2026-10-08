@@ -1,0 +1,66 @@
+name: Check upstream updates
+
+on:
+  schedule:
+    - cron: "23 14 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the localized fork
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Check for upstream commits
+        id: upstream
+        shell: bash
+        run: |
+          git fetch https://github.com/robbietilton/Compositor.git main
+          upstream_sha="$(git rev-parse FETCH_HEAD)"
+          fork_sha="$(git rev-parse HEAD)"
+          pending="$(git rev-list --count "${fork_sha}..${upstream_sha}")"
+          echo "sha=${upstream_sha}" >> "${GITHUB_OUTPUT}"
+          echo "pending=${pending}" >> "${GITHUB_OUTPUT}"
+
+      - name: Publish the upstream snapshot branch
+        if: steps.upstream.outputs.pending != '0'
+        env:
+          UPSTREAM_SHA: ${{ steps.upstream.outputs.sha }}
+        run: git push origin "${UPSTREAM_SHA}:refs/heads/sync/upstream-main" --force
+
+      - name: Open or refresh the upstream update pull request
+        if: steps.upstream.outputs.pending != '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          UPSTREAM_SHA: ${{ steps.upstream.outputs.sha }}
+        shell: bash
+        run: |
+          short_sha="${UPSTREAM_SHA:0:7}"
+          head="${GITHUB_REPOSITORY_OWNER}:sync/upstream-main"
+          existing="$(gh pr list --base "${GITHUB_REF_NAME}" --head "${head}" --state open --json number --jq '.[0].number // empty')"
+
+          if [[ -z "${existing}" ]]; then
+            cat > /tmp/upstream-update.md <<'EOF'
+          This pull request brings the latest upstream `main` changes into the localized fork.
+
+          Before merging, review any source conflicts and update `Compositor/zh-Hans.lproj/Localizable.strings` for new or changed UI text. Then build and review the localized app.
+
+          The upstream Sparkle feed is disabled for this fork's build so an English release cannot replace the Chinese app. Keep it disabled unless a signed update feed for this fork is configured.
+
+          Upstream repository: https://github.com/robbietilton/Compositor
+          EOF
+            gh pr create \
+              --base "${GITHUB_REF_NAME}" \
+              --head "${head}" \
+              --title "Sync upstream main (${short_sha})" \
+              --body-file /tmp/upstream-update.md
+          else
+            echo "Updated upstream sync pull request #${existing} with ${short_sha}."
+          fi

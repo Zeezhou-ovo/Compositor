@@ -291,7 +291,7 @@ extension EditorSession {
             case .outerGlow: effects.outerGlow = original.outerGlow
             case .innerGlow: effects.innerGlow = original.innerGlow
             }
-            setEffects(effects, on: editing.layerID, name: "Cancel " + editing.kind.rawValue)
+            setEffects(effects, on: editing.layerID, name: CompositorText.format("Cancel %@", CompositorText.string(editing.kind.rawValue)))
         }
         effectsEditing = nil
         effectsEditingOriginal = nil
