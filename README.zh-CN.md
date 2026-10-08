@@ -12,11 +12,9 @@ Compositor 是一款适用于 Mac 的免费开源图像编辑器，提供图层�
 
 ## 安装应用
 
-可从 [Compositor 官网](https://robbietilton.com/compositor) 或 [GitHub Releases](https://github.com/robbietilton/Compositor/releases) 下载应用。也可以使用 Homebrew：
+此 fork 目前没有单独发布的中文版安装包。上游官网、上游 GitHub Releases 和 Homebrew 提供的都是英文版。
 
-```sh
-brew install --cask robbietilton-compositor
-```
+要使用这个汉化版，请按下面的步骤从本仓库默认的 `zh-Hans` 分支构建并运行。
 
 ## 从源码构建
 
