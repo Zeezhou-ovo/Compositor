@@ -65,11 +65,15 @@ nonisolated enum ProjectError: LocalizedError {
     case invalid, version(Int), missingImage, tooLarge, encode
     var errorDescription: String? {
         switch self {
-        case .invalid: "This is not a valid Compositor project, or its metadata is damaged."
-        case .version(let version): "This project uses format version \(version). This app supports versions \(ProjectManifest.supported.lowerBound)–\(ProjectManifest.supported.upperBound)."
-        case .missingImage: "An image inside the project is missing or damaged. The current document has not been replaced."
-        case .tooLarge: "This project exceeds the supported canvas, layer, file-size, or \(DocumentLimits.documentBudgetMegapixels)-megapixel document limit."
-        case .encode: "An image could not be saved. The previous project has not been replaced."
+        case .invalid: CompositorText.string("This is not a valid Compositor project, or its metadata is damaged.")
+        case .version(let version):
+            CompositorText.format("This project uses format version %lld. This app supports versions %lld–%lld.",
+                                  Int64(version), Int64(ProjectManifest.supported.lowerBound), Int64(ProjectManifest.supported.upperBound))
+        case .missingImage: CompositorText.string("An image inside the project is missing or damaged. The current document has not been replaced.")
+        case .tooLarge:
+            CompositorText.format("This project exceeds the supported canvas, layer, file-size, or %lld-megapixel document limit.",
+                                  Int64(DocumentLimits.documentBudgetMegapixels))
+        case .encode: CompositorText.string("An image could not be saved. The previous project has not been replaced.")
         }
     }
 }

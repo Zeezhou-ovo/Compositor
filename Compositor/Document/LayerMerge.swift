@@ -64,7 +64,7 @@ extension EditorSession {
         next.insert(merged, at: min(max(0, insertion), next.count))
         guard (try? LayerHierarchy.validate(next.map(\.hierarchyRecord))) != nil else { NSSound.beep(); return }
         finishOpacityEdit()
-        beginEdit(plan.action)
+        beginEdit(CompositorText.string(plan.action))
         self.document?.layers = next
         activeLayerID = merged.id
         endEdit()

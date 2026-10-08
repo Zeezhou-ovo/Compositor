@@ -1,5 +1,9 @@
 # Compositor
 
+简体中文界面：[README.zh-CN.md](README.zh-CN.md)
+
+汉化分支更新说明：[UPDATING.zh-CN.md](UPDATING.zh-CN.md)
+
 Adobe Photoshop costs too much and tools like GIMP don’t feel familiar enough for me to stay in flow. That’s why I built Compositor.
 
 The goal was to create a full-featured image editor that is completely free and open source. I used to use Photoshop for compositing and post-processing, so Compositor is built around that workflow - with the tools needed to create a pixel-perfect final image.

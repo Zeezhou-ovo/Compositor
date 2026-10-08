@@ -93,7 +93,7 @@ struct ColorPickerSheet: View {
             hsb.hue = (1 - min(1, max(0, value.location.y / fieldSize))) * 360
         })
         .accessibilityLabel("Hue")
-        .accessibilityValue("\(Int(hsb.hue.rounded())) degrees")
+        .accessibilityValue(CompositorText.format("%lld degrees", Int64(hsb.hue.rounded())))
     }
 
     private var preview: some View {
@@ -130,7 +130,7 @@ struct ColorPickerSheet: View {
                 hsb.setRGB(rgb)
             })
         return GridRow {
-            Text(label).frame(width: 14, alignment: .leading)
+            Text(CompositorText.key(label)).frame(width: 14, alignment: .leading)
                 .scrubbable(sensitivity: 1, value: channelValue, range: 0...255)
             TextField(label, value: channelValue, format: .number)
                 .frame(width: 52)
@@ -177,7 +177,7 @@ final class ColorPickerPanelController: NSObject {
         panel.onClose = { [weak session] in
             if session?.colorPicker != nil { session?.closeColorPicker(commit: false) }
         }
-        panel.show(title: state.target.title,
+        panel.show(title: CompositorText.string(state.target.title),
                    content: ColorPickerSheet(state: state) { [weak session] commit in
                        session?.closeColorPicker(commit: commit)
                    })
@@ -215,4 +215,3 @@ struct DialogColorSwatch: View {
         if session.pickingForDialog { session.closeColorPicker(commit: true) }
     }
 }
-
